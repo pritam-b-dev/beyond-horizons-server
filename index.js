@@ -4,7 +4,7 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 const dotenv = require("dotenv");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 dotenv.config();
 const uri = process.env.MONGODB_URI;
 
@@ -34,6 +34,24 @@ async function run() {
     app.post("/destination", async (req, res) => {
       const destinationData = req.body;
       const result = await destinationCollection.insertOne(destinationData);
+      res.json(result);
+    });
+
+    app.get("/destination/:id", async (req, res) => {
+      const { id } = req.params;
+      const result = await destinationCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      res.json(result);
+    });
+
+    app.patch("/destination/:id", (req, res) => {
+      const { id } = req.params;
+      const updatedData = req.body;
+      const result = destinationCollection.updateOne(
+        { _id: ObjectId(id) },
+        { $set: updatedData },
+      );
       res.json(result);
     });
 
