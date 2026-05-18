@@ -26,6 +26,11 @@ async function run() {
     const db = client.db("BeyondHorizons");
     const destinationCollection = db.collection("destination");
 
+    app.get("/destination", async (req, res) => {
+      const result = await destinationCollection.find().toArray();
+      res.json(result);
+    });
+
     app.post("/destination", async (req, res) => {
       const destinationData = req.body;
       const result = await destinationCollection.insertOne(destinationData);
