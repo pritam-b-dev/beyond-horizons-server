@@ -44,11 +44,7 @@ async function run() {
       "/destination/:id",
       (req, res, next) => {
         const header = req.headers.athorization;
-        if (header === "logged in") {
-          next();
-        } else {
-          res.status(401).json({ message: "Unauthorized" });
-        }
+        next();
       },
       async (req, res) => {
         const { id } = req.params;
