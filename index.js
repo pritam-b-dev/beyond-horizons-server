@@ -5,7 +5,7 @@ app.use(cors());
 app.use(express.json());
 const dotenv = require("dotenv");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const { createRemoteJWKSet } = require("jose-cjs");
+const { createRemoteJWKSet, jwtVerify } = require("jose-cjs");
 dotenv.config();
 const uri = process.env.MONGODB_URI;
 
@@ -91,13 +91,13 @@ async function run() {
 
     //booking collection api structure starts
 
-    app.post("/bookings", async (req, res) => {
+    app.post("/bookings", verifyToken, async (req, res) => {
       const bookingData = req.body;
       const result = await bookingCollection.insertOne(bookingData);
       res.json(result);
     });
 
-    app.get("/bookings/:userId", async (req, res) => {
+    app.get("/bookings/:userId", verifyToken, async (req, res) => {
       const { userId } = req.params;
       const result = await bookingCollection
         .find({
@@ -107,7 +107,7 @@ async function run() {
       res.json(result);
     });
 
-    app.delete("/bookings/:bookingId", async (req, res) => {
+    app.delete("/bookings/:bookingId", verifyToken, async (req, res) => {
       const { bookingId } = req.params;
       const result = await bookingCollection.deleteOne({
         _id: new ObjectId(bookingId),
