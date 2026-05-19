@@ -32,9 +32,11 @@ const verifyToken = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-
+  const dynamicJWKS = createRemoteJWKSet(
+    new URL(`${process.env.CLIENT_URL}/api/auth/jwks`),
+  );
   try {
-    const { payload } = await jwtVerify(token, JWKS);
+    const { payload } = await jwtVerify(token, dynamicJWKS);
     next();
   } catch (error) {
     return res.status(403).json({ message: "Forbidden" });
