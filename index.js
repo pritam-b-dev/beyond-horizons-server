@@ -25,7 +25,9 @@ async function run() {
 
     const db = client.db("BeyondHorizons");
     const destinationCollection = db.collection("destination");
+    const bookingCollection = db.collection("bookings");
 
+    // destination collection api structure starts
     app.get("/destination", async (req, res) => {
       const result = await destinationCollection.find().toArray();
       res.json(result);
@@ -59,6 +61,17 @@ async function run() {
       const result = await destinationCollection.deleteOne({
         _id: new ObjectId(id),
       });
+      res.json(result);
+    });
+
+    // destination collection api structure ends
+    //-----------------------------------------------------------------------------------
+
+    //booking collection api structure starts
+
+    app.post("/bookings", async (req, res) => {
+      const bookingData = req.body;
+      const result = await bookingCollection.insertOne(bookingData);
       res.json(result);
     });
 
